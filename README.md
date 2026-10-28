@@ -144,11 +144,12 @@
 
 ## 8. 快速开始
 
+**Windows 用户也可以直接双击根目录的 `start.cmd`**，它会自动切到项目目录、用 `.venv` 里的 Python 启动看板。
+
 ```powershell
 # 1. 环境（Windows，Python 3.11，Java 17）
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-
 # 2. 数据（下载后放到 data/raw/UserBehavior.csv，3.4 GB）
 #    天池 UserBehavior 数据集，MD5: 2c67e9b4e3908fd30a3f43ec95a7de8c
 
@@ -167,6 +168,7 @@ python scripts\10_ads_funnel.py     # ADS 漏斗
 python scripts\11_ads_rf_segment.py # ADS RF 分层
 python scripts\12_export_ads_csv.py # 导出 4 个 CSV
 python scripts\ai_eval.py           # 30 条评测集回归：期望 30/30
+
 
 # 4. 看板
 streamlit run scripts\13_app_dashboard.py
@@ -190,6 +192,8 @@ OPENAI_MODEL=deepseek-chat
 ```text
 data_warehouse/
 ├── README.md                       # 本文件
+├── start.cmd                       # 一键启动看板（Windows 双击）
+├── requirements.txt                # 依赖清单（钉死版本，别人能复现）
 ├── data/                           # 全部数据产物（不入库，几十 GB）
 │   ├── raw/UserBehavior.csv        # 原始文件 3.4 GB
 │   ├── ods/                        # 原样存，按 dt 分区
@@ -204,7 +208,7 @@ data_warehouse/
 └── scripts/                        # 26 个脚本，编号 = 执行顺序
     ├── 00_count.py ~ 12_export_ads_csv.py   # 数仓四层
     ├── 13_app_dashboard.py                  # Streamlit 看板
-    ├── 14_ai_bootstrap → ai_*.py            # AI 问数层
+    ├── ai_bootstrap.py → ai_*.py            # AI 问数层
     └── check_dup.py / verify_dwd.py         # 一次性下钻与校验
 ```
 
