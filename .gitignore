@@ -1,0 +1,9 @@
+﻿.venv/
+data/*
+!data/ads_csv/
+.idea/
+__pycache__/
+*.log
+.env
+scratch/
+.obsidian/

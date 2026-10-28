@@ -1,0 +1,1 @@
+F:\data_warehouse\.venv\Scripts\python.exe -m streamlit run F:\data_warehouse\scripts\13_app_dashboard.py
