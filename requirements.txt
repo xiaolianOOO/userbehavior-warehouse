@@ -1,0 +1,11 @@
+# 数据仓库层：Spark 本地模式运行，需要本机预装 JDK 17
+pyspark==3.5.9
+
+# AI 问数层：DuckDB 直接读 parquet 文件，不启动 Spark
+duckdb==2.0.0
+sqlglot==30.25.0
+openai==3.39.0
+
+# 看板与数据处理
+streamlit==1.66.1
+pandas==3.1.0

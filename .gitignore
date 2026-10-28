@@ -7,3 +7,5 @@ __pycache__/
 .env
 scratch/
 .obsidian/
+docs/面试可能会问的问题.md
+docs/项目流程.md
