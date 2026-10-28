@@ -5,6 +5,12 @@
 import pandas as pd
 import streamlit as st
 
+# ---- G9：第 5 页签（问数）需要的 ----
+from ai_nl2sql import ask
+from ai_nl2sql import NotSupported, UnknownMetric, BadPlan
+from ai_guard import GuardError
+
+
 CSV_DIR = "F:/data_warehouse/data/ads_csv"
 
 st.set_page_config(page_title="淘宝 UserBehavior 数仓看板", page_icon="📊", layout="wide")
@@ -73,6 +79,56 @@ def explain(items):
             st.markdown(f"**{head}**  \n{body}")
 
 
+# ============================================================
+# 第 5 页签：用大白话问数
+# ============================================================
+@st.cache_resource
+def get_con():
+    """★ 问题①：整个应用生命周期只建一次连接和图，不随每次点击重建。"""
+    from ai_bootstrap import connect
+    return connect()
+
+
+@st.cache_data(show_spinner=False, ttl=3600)
+def ask_cached(q: str):
+    """★ 问题②：同一个问题第二次秒回（缓存 1 小时）。"""
+    con = get_con()
+    try:
+        r = ask(q, con)
+        return {"ok": True, "sql": r["sql"], "answer": r["answer"], "rows": len(r["df"])}
+    except (NotSupported, UnknownMetric, BadPlan, GuardError) as e:
+        return {"ok": False, "kind": type(e).__name__, "msg": str(e)}
+
+
+def render_ask_tab():
+    st.subheader("用大白话问数")
+    st.caption(
+        "能问的：日活 / 浏览量 / 买家人数 / 购买率 / 加购率 / 人均页数 / "
+        "次日留存 / 转化率 / 人群分层 / 卖得最多的商品 / 最火的类目 / 未购买人数"
+    )
+
+    q = st.text_input("问一句人话", placeholder="例如：每天有多少人来？", key="nl2q")
+
+    if not q.strip():
+        st.info("在上面输入一个问题，按回车。")
+        return
+
+    with st.spinner("理解问题 → 生成 SQL → 查数 → 组装答案…"):
+        r = ask_cached(q.strip())
+
+    if not r["ok"]:
+        st.warning(f"这个问题答不了（{r['kind']}）：{r['msg']}")
+        st.caption("这不是故障 —— 指标库里没有对应口径时，系统会拒答，而不是编一个数出来。")
+        return
+
+    st.markdown(r["answer"])
+    st.metric("返回行数", r["rows"])
+
+    with st.expander("看生成出来的 SQL（可复制去 DataGrip 复核）"):   # ★ 问题③
+        st.code(r["sql"], language="sql")
+        st.caption("这份 SQL 已过 sqlglot AST 校验：只允许 SELECT、必须带 dt 范围、LIMIT ≤ 500。")
+
+
 traffic   = load("ads_traffic")
 retention = load("ads_retention")
 funnel    = load("ads_funnel")
@@ -86,7 +142,9 @@ st.caption(
 
 pct = lambda x: f"{x:.2%}"
 
-tab1, tab2, tab3, tab4 = st.tabs(["① 流量", "② 留存", "③ 漏斗", "④ RF 分层"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    ["① 流量", "② 留存", "③ 漏斗", "④ RF 分层", "⑤ 问数"]
+)
 
 # ══════════════ ① 流量 ══════════════
 with tab1:
@@ -283,3 +341,7 @@ with tab4:
 
     st.subheader("原始数据")
     show(rf, {**RF_CN, "r_seg": "R档", "f_seg": "F档"})
+
+    # ══════════════ ⑤ 问数 ══════════════
+    with tab5:
+        render_ask_tab()

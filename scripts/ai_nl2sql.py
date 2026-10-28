@@ -194,12 +194,10 @@ def _detail(metric: str, df) -> list:
     if not dims:
         return []
 
-    sort_col = "dt" if "dt" in dims else metric
-    asc = sort_col == "dt"
     out = []
-    for r in df.sort_values(sort_col, ascending=asc).itertuples(index=False):
+    for r in df.itertuples(index=False):        # 不再重排：SQL 已经 ORDER BY 过了
         key = " / ".join(_fmt_day(getattr(r, d)) if d == "dt" else str(getattr(r, d)) for d in dims)
-        out.append(f"  {key}   {_fmt(getattr(r, metric), metric)} {unit}")
+        out.append(f"{key} ｜ {_fmt(getattr(r, metric), metric)} {unit}")
     return out
 
 
@@ -211,7 +209,7 @@ def _answer(metric: str, df) -> str:
 
     detail = _detail(metric, df)
     if detail:
-        parts.append("【明细】\n" + "\n".join(detail))
+        parts.append("【明细】\n" + "\n".join(f"- {x}" for x in detail))
 
     note = METRICS[metric].get("note")
     if note:
