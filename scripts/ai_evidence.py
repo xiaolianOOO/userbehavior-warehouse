@@ -198,10 +198,10 @@ def render_sql(evs) -> str:
 # ---------------------------------------------------------------------------
 
 def _load_bootstrap():
-    """14_ai_bootstrap.py 文件名以数字开头，不能直接 import，只能用 importlib。"""
+    """加载 ai_bootstrap 模块（拿 duckdb 连接）。"""
     import importlib.util
     spec = importlib.util.spec_from_file_location(
-        "boot", r"F:\data_warehouse\scripts\14_ai_bootstrap.py")
+        "boot", r"F:\data_warehouse\scripts\ai_bootstrap.py")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod

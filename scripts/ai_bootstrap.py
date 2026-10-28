@@ -1,4 +1,4 @@
-# scripts/14_ai_bootstrap.py —— AI 层地基：7 张表挂成视图 + 行数锚点 + 跨层对账
+# scripts/ai_bootstrap.py —— AI 层地基：7 张表挂成视图 + 行数锚点 + 跨层对账
 import duckdb
 
 DATA = "F:/data_warehouse/data"

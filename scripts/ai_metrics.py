@@ -278,7 +278,7 @@ if __name__ == "__main__":
     import duckdb
     from importlib import import_module
 
-    boot = import_module("14_ai_bootstrap") if False else None  # 占位，实际直接调 connect
+    boot = import_module("ai_bootstrap") if False else None  # 占位，实际直接调 connect
 
     con = duckdb.connect()
     DATA = "F:/data_warehouse/data"

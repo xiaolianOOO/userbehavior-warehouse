@@ -2,7 +2,7 @@
 import sqlglot
 from sqlglot import exp
 
-# 白名单：只允许查这 7 张表（和 14_ai_bootstrap.py 保持一致）
+# 白名单：只允许查这 7 张表（和 ai_bootstrap.py 保持一致）
 ALLOW_TABLES = {
     "dws_user_day", "dws_item_day", "dws_category_day",
     "ads_traffic", "ads_retention", "ads_funnel", "ads_rf_segment",
